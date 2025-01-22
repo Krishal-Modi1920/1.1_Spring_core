@@ -1,0 +1,10 @@
+**********************************************************************************************************************************************************************
+
+*) Autowiring 
+
+- This will inject the dependences automatically (only applicable to objects not for primitive and String types).
+- We were doing Manual Wiring and now this will automatically wiring.
+- Two types of Automatic Wiring
+	1) XML (no, byName, byType, constructor, autodetect)
+	2) Annotations (@Autowired, etc)
+

@@ -1,0 +1,797 @@
+**********************************************************************************************************************************************************************
+
+**) Dependency Injection = Dependency Injection (DI) is a design pattern that promotes loose coupling by providing objects that a class depends on (its dependencies) from an external source, rather than the class creating them itself.
+
+In simpler terms, instead of a class constructing its own dependencies, they are "injected" into the class by an external entity, like a framework (e.g., Spring).
+
+Types of Dependency Injection:
+Constructor Injection: Dependencies are provided through the class constructor.
+Setter Injection: Dependencies are set via setter methods after the object is created.
+Interface Injection: The class provides an interface for injection, allowing external code to inject the dependency.
+
+**********************************************************************************************************************************************************************
+
+**) IOC Container = The IoC (Inversion of Control) Container is a core concept in frameworks like Spring that manages the creation and lifecycle of objects (beans) and their dependencies. **create hold and store objects** 
+
+In simple terms:
+The IoC container takes care of creating objects, wiring them together (injecting dependencies), and managing their lifecycle.
+Normally, in object-oriented programming, you create objects manually using the new keyword. With IoC, the container takes control of this process, so you don’t need to create objects yourself.
+
+**********************************************************************************************************************************************************************
+
+**) Spring Framework Architecture
+	
+*) Core Container:
+Core: Contains fundamental parts of Spring, such as the IoC container (responsible for creating and managing objects).
+Beans: Provides functionalities related to beans (objects managed by Spring's IoC container).
+AOP (Aspect-Oriented Programming): Helps in separating cross-cutting concerns (like logging, security) from business logic.
+Context: Represents the environment for Spring applications, used to load beans and configurations.
+SpEL (Spring Expression Language): Provides a powerful expression language for querying and manipulating objects at runtime.
+
+
+*) Data Access Layer:
+JDBC (Java Database Connectivity):
+It's a way to connect to and interact with databases.
+Spring simplifies this with JDBC Template to perform database operations like querying and updating data.
+
+ORM (Object-Relational Mapping):
+It helps convert Java objects into database records and vice versa.
+Spring supports ORM frameworks like Hibernate and JPA to manage database operations without writing raw SQL.
+
+OXM (Object-XML Mapping):
+It converts Java objects to XML format and vice versa.
+Useful for applications that need to send or receive data in XML format.
+
+JMS (Java Message Service):
+It’s a way to send and receive messages between different parts of an application (or between applications).
+Spring helps integrate messaging systems like ActiveMQ or RabbitMQ for communication.
+
+
+*) Web Layer:
+
+WebSocket:
+A communication protocol for real-time, two-way interaction between a server and a client.
+Useful for live chat, notifications, and interactive applications.
+
+Servlet:
+It’s a basic building block for web applications in Java.
+Spring uses Servlets to manage HTTP requests and responses.
+
+Web:
+This refers to the core components for building web applications in Spring.
+Includes support for managing HTTP requests, sessions, and responses.
+
+MVC (Model-View-Controller):
+A design pattern for organizing web applications.
+Model: Represents the data.
+View: How data is displayed (UI).
+Controller: Handles user input and updates the model or view.
+Spring MVC helps build well-organized and maintainable web apps.
+
+**********************************************************************************************************************************************************************
+
+*) Initialize The Maven Project 
+-Create Xml Files in Resources
+-Create Java files in the same directory as Main.java in src/main/java/org.example/javafile
+
+*) Add Dependencies in pom.xml
+
+<dependencies>
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>6.2.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>6.2.1</version>
+        </dependency>
+
+</dependencies>
+
+*) config.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="student1" class="org.example.Student">
+        <property name="studentId" value="223322"/>
+        <property name="studentName" value="Krishal"/>
+        <property name="studentAddress" value="Ahmedabad"/>
+    </bean>
+
+	// OR
+        <bean id="student1" class="org.example.Student" p:studentId="23321" p:studentName="John Wick"
+          p:studentAddress="Ahmedabad">
+    </bean>
+
+</beans>
+
+
+
+*) Student.java
+
+package org.example;
+
+public class Student {
+    private int studentId;
+    private String studentName;
+    private String studentAddress;
+
+    // Getters and Setters
+    public int getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(int studentId) {
+        System.out.println("Setting Student ID");
+        this.studentId = studentId;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        System.out.println("Setting Student Name");
+        this.studentName = studentName;
+    }
+
+    public String getStudentAddress() {
+        return studentAddress;
+    }
+
+    public void setStudentAddress(String studentAddress) {
+        System.out.println("Setting Student Address");
+        this.studentAddress = studentAddress;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "studentId=" + studentId +
+                ", studentName='" + studentName + '\'' +
+                ", studentAddress='" + studentAddress + '\'' +
+                '}';
+    }
+}
+
+
+*) Main.java
+
+package org.example;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+        // Correct classpath resource
+        ApplicationContext context = new ClassPathXmlApplicationContext("config.xml");
+        Student student1 = (Student) context.getBean("student1");
+        System.out.println(student1);
+    }
+}
+
+**********************************************************************************************************************************************************************
+
+*) config.xml (Use This for Libraries)
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd"> 
+
+    <!-- This is our beans -->
+    <bean class="org.example.Student" name="student1" p:studentId="11233" p:studentName="John" p:studentAddress="Ahmedabad" />
+
+    <!-- This is Second bean -->
+    <bean class="org.example.Student" name="student2" p:studentId="22344" p:studentName="Mark" p:studentAddress="Surat" />
+
+</beans>
+
+**********************************************************************************************************************************************************************
+
+*) collectionconfig.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd"> 
+
+    <bean name="emp1" class="com.springcore.collections.Emp">
+        <property name="name" value="Radhe" />
+        
+        
+        <property name="phones">
+            <list>
+                <value>2255</value>
+                <value>2266</value>
+                <value>3377</value>                
+            </list>
+        </property>
+        
+        
+        <property name="address">
+            <set>
+                <value>Ahmedabad</value>
+                <value>Delhi</value>
+                <value>Lucknow</value>
+            </set>
+        </property>
+        
+        
+        <property name="courses">
+            <map>
+                <entry key="Java" value="2 month"/>
+                <entry key="Python" value="1.5 month"/>
+                <entry key="C" value="1 month"/>
+            </map>
+        </property>
+        
+        
+       
+    </bean>
+</beans>
+
+*) Emp.java
+
+package com.springcore.collections;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+public class Emp {
+	private String name;
+	private List<String> phones;
+	private Set<String> address;
+	private Map<String, String> courses;
+	private Properties props;
+	
+	public Emp(String name, List<String> phones, Set<String> address, Map<String, String> courses, Properties props) {
+		super();
+		this.name = name;
+		this.phones = phones;
+		this.address = address;
+		this.courses = courses;
+		this.props = props;
+	}
+	public Properties getProps() {
+		return props;
+	}
+	public void setProps(Properties props) {
+		this.props = props;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public List<String> getPhones() {
+		return phones;
+	}
+	public void setPhones(List<String> phones) {
+		this.phones = phones;
+	}
+	public Set<String> getAddress() {
+		return address;
+	}
+	public void setAddress(Set<String> address) {
+		this.address = address;
+	}
+	public Map<String, String> getCourses() {
+		return courses;
+	}
+	public void setCourses(Map<String, String> courses) {
+		this.courses = courses;
+	}
+	public Emp() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	@Override
+	public String toString() {
+		return "Emp [name=" + name + ", phones=" + phones + ", address=" + address + ", courses=" + courses + ", props="
+				+ props + "]";
+	}
+	
+	
+	
+}
+
+*) Test.java 
+
+package com.springcore.collections;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class Test {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/springcore/collections/collectionconfig.xml");
+		Emp emp1 =(Emp) context.getBean("emp1");
+		
+		System.out.println(emp1.getName());
+		System.out.println(emp1.getPhones());
+		System.out.println(emp1.getAddress());
+		System.out.println(emp1.getCourses());
+		
+	}
+}
+
+**********************************************************************************************************************************************************************
+
+*) Injecting Reference Type
+
+*) A.java
+
+package com.springcore.ref;
+
+public class A {
+	private int x;
+	private B ob;
+	public int getX() {
+		return x;
+	}
+	public void setX(int x) {
+		this.x = x;
+	}
+	public B getOb() {
+		return ob;
+	}
+	public void setOb(B ob) {
+		this.ob = ob;
+	}
+	@Override
+	public String toString() {
+		return "A [x=" + x + ", ob=" + ob + "]";
+	}
+	
+}
+
+*) B.java
+
+package com.springcore.ref;
+
+public class B {
+	private int y;
+	
+	public int getY() {
+		return y;
+	}
+	
+	public void setY(int y) {
+		this.y = y;
+	}
+	
+	public B() {
+		super();
+		
+	}
+
+	@Override
+	public String toString() {
+		return "B [y=" + y + "]";
+	}
+}
+
+
+*) refconfig.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd"> 
+
+    <bean class="com.springcore.ref.B" name="bref">
+    	<property name="y" value="90"></property>
+    </bean>
+    
+   <!--  <bean class="com.springcore.ref.A" name="aref" p:x="33" p:ob-ref="bref"/>
+    	 -->
+    	
+    <bean class="com.springcore.ref.A" name="aref">	
+    	<property name="x" value="12"/>
+    	<property name="ob">
+    		<ref bean="bref"/>
+    	</property> 
+    </bean>
+    
+     
+     
+	
+</beans>
+
+*) Test.java
+
+package com.springcore.ref;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class Test {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/springcore/ref/refconfig.xml");
+		A temp = (A) context.getBean("aref");
+		System.out.println(temp.getX());
+		
+		System.out.println(temp.getOb().getY());
+		System.out.println(temp);
+	}
+
+}
+
+**********************************************************************************************************************************************************************
+
+*) Constructor Injection
+
+*) Person.java
+package com.springcore.ci;
+
+public class Person {
+	private String name;
+	private int personId;
+	private Certi certi;
+
+	public Person(String name, int personId, Certi certi) {
+		this.name = name;
+		this.personId = personId;
+		this.certi = certi;
+	}
+
+	@Override
+	public String toString() {
+		return this.name + " : " + this.personId + " {" + certi + " }";
+	}
+}
+
+
+
+*) ciconfig.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- Certi bean with constructor injection -->
+    <bean class="com.springcore.ci.Certi" name="cer">
+        <constructor-arg value="Python Programming Language" />
+    </bean>
+    
+    <!-- <bean class="com.springcore.ci.Certi" name="cer" c:name="Python Programming Language" />-->
+
+    <!-- Person bean with constructor injection, injecting certi bean -->
+    <bean class="com.springcore.ci.Person" name="person">
+        <constructor-arg value="Krishal" />
+        <constructor-arg value="17" type="int"/>
+        <constructor-arg ref="cer" />
+    </bean>
+
+
+	<bean class="com.springcore.ci.Addition" name="add">
+		<constructor-arg value="12" type="int" index="1"/>   <!-- type = "int"  that means it will call only int constructor -->
+		<constructor-arg value="34" type="int" index="0"/>
+	</bean>
+	
+</beans>
+
+
+
+
+*) Test.java
+
+package com.springcore.ci;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class Test {
+	public static void main(String[] args)
+	{
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/springcore/ci/ciconfig.xml");
+		Person p=(Person) context.getBean("person");
+		System.out.println(p);
+		
+		// Certi.java, Person.java -> ciconfig.xml -> Test.java
+		
+		// Addition 
+		
+		Addition add = (Addition) context.getBean("add");
+		add.dosum();
+	}
+}
+
+
+*) Certi.java
+
+package com.springcore.ci;
+
+public class Certi {
+	private String name;
+
+	public Certi(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return this.name;
+	}
+}
+
+*) Addition.java (for Ambiguity Solving = means constructor overloading can be called individually it is shown in this bean)
+
+package com.springcore.ci;
+
+public class Addition {
+	private int a;
+	private int b;
+	
+	public Addition(int a, int b)
+	{
+		this.a = a;
+		this.b = b;
+		System.out.println("Constructor : int , int");	
+	}
+	
+	public Addition(double a, double b)
+	{
+		this.a = (int) a;
+		this.b = (int) b;
+		System.out.println("Constructor : double , double");	
+	}
+	
+	public Addition(String a, String b)
+	{
+		this.a = Integer.parseInt(a);
+		this.b = Integer.parseInt(b);
+		System.out.println("Constructor : String , String");	
+	}
+	
+	public void dosum() {
+		System.out.println("Value of a : " + this.a);
+		System.out.println("Value of b : " + this.b);
+		System.out.println("Sum is " + (this.a + this.b));
+	}
+}
+
+
+**********************************************************************************************************************************************************************
+*) Implementing Bean Lifecycle using XML, Interfaces and Annotations
+	
+	Samosa == Implementation using XML
+	Pepsi == Implementation using Interface
+	Example == Implementation using Annotations
+
+	Add dependencies in pom.xml
+
+	<dependency>
+        	<groupId>javax.annotation</groupId>
+        	<artifactId>javax.annotation-api</artifactId>
+        	<version>1.3.2</version>
+        </dependency>
+
+**********************************************************************************************************************************************************************
+
+*) Samosa.java
+
+package com.springcore.lifecycle;
+
+public class Samosa {
+	private double price;
+
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		System.out.println("Setting Property");
+		this.price = price;
+	}
+
+	public Samosa() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public String toString() {
+		return "Samosa [price=" + price + "]";
+	}
+	
+	public void init() {
+		System.out.println("Inside init method");
+	}
+	
+	public void destroy() {
+		System.out.println("Inside Destroy method");
+	}
+}
+
+*) Pepsi.java
+
+package com.springcore.lifecycle;
+
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
+
+public class Pepsi implements InitializingBean,DisposableBean{
+	private double price;
+
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
+	public Pepsi() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public String toString() {
+		return "Pepsi [price=" + price + "]";
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		// TODO Auto-generated method stub
+		System.out.println("taking pepsi : init");
+	}
+
+	@Override
+	public void destroy() throws Exception {
+		// TODO Auto-generated method stub
+		System.out.println("going to put Bottle Back to shop");
+	}
+	
+}	
+
+*) Example.java
+
+package com.springcore.lifecycle;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
+public class Example {
+	private String subject;
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	public Example() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public String toString() {
+		return "Example [subject = " + subject + "]";
+	}
+	
+	@PostConstruct
+	public void start() {
+		System.out.println("Starting Method");
+	}
+	
+	@PreDestroy
+	public void end() {
+		System.out.println("Ending Method");
+	}
+	
+}
+
+
+*) Test.java
+
+package com.springcore.lifecycle;
+
+import org.springframework.context.ApplicationContext;
+
+import org.springframework.context.support.AbstractApplicationContext;
+
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class Test {
+	
+	public static void main(String[] args){
+		// TODO Auto-generated method stub
+		// AbstractApplicationContext is used for shut down of life cycle and the method used is registerShutdownHook();
+		AbstractApplicationContext context = new ClassPathXmlApplicationContext("com/springcore/lifecycle/config.xml");
+		Samosa s1 = (Samosa) context.getBean("s1");
+		System.out.println(s1);
+		context.registerShutdownHook();
+		
+		
+		System.out.println("++++++++++++++++++++++++++++++++++++++++++++");
+		Pepsi p1 = (Pepsi) context.getBean("p1");
+		System.out.println(p1);
+		
+		
+		System.out.println("++++++++++++++++++++++++++++++++++++++++++++");
+		Example example = (Example) context.getBean("example");
+		System.out.println(example);
+	}
+	
+}
+
+
+*) config.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd"> 
+
+    <context:annotation-config />
+    
+	<bean class="com.springcore.lifecycle.Samosa" name="s1" init-method="init" destroy-method="destroy">
+		<property name="price" value="10" /> 
+	</bean>
+    
+     
+    <bean class="com.springcore.lifecycle.Pepsi" name="p1" >
+    	<property name="price" value="5" />
+    </bean>
+	
+	
+	<bean class="com.springcore.lifecycle.Example" name="example" >
+		<property name="subject" value="Maths" />
+    </bean>
+	
+	<!-- OR 
+		<bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
+		only for 2 annotations @PostConstruct and @PreDestroy
+	-->
+		
+</beans>
