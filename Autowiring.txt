@@ -1,0 +1,56 @@
+**********************************************************************************************************************************************************************
+
+*) Autowiring 
+
+- This will inject the dependences automatically (only applicable to objects not for primitive and String types).
+- We were doing Manual Wiring and now this will automatically wiring.
+- Two types of Automatic Wiring
+	1) XML (no, byName, byType, constructor, autodetect)
+	2) Annotations (@Autowired, etc)
+
+**) Dog.java
+
+package com.edigest.myFirstProject;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class Dog {
+
+    public String fun(){
+        return "something";
+    }
+
+}
+
+
+
+**) Car.java
+
+package com.edigest.myFirstProject;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class Car {
+
+    @Autowired
+    public Dog dog;
+
+    @GetMapping("abc")
+    public String sayHello(){
+        return dog.fun();
+    }
+}
+
+
+
+- Here Car class is depending on Dog class means it is called Dependency Injection
+- And here @Autowired means Dog gave object to car class and Car class can use it 
+
+
+
+If we use Dog dog= new Dog() in multiple class instead of autowired then there will be multiple instance 
+So we are using auto wired 
